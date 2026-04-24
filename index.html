@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laura & Gabriel | Invitación de Boda</title>
+
+    <!-- Tailwind CSS (Motor de Estilos) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fuentes Tipográficas Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Configuración de Tailwind para reconocer las fuentes -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React, ReactDOM y Babel (Motor Lógico) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Estilos de Animación CSS -->
+    <style>
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fade-in-up { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0) translateX(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-100px) translateX(20px); opacity: 0; } }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-fade-in { animation: fade-in 1s ease-out forwards; }
+        .animate-fade-in-up { animation: fade-in-up 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .animate-float { animation: float infinite ease-in-out; }
+        html { scroll-behavior: smooth; }
+        .text-shadow-md { text-shadow: 0 2px 8px rgba(0,0,0,0.7); }
+    </style>
+</head>
+<body class="bg-[#FDF7F2]">
+    
+    <!-- Contenedor Principal donde React inyectará la Aplicación -->
+    <div id="root"></div>
+
+    <!-- Código React (JSX) -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- SISTEMA ICONOGRÁFICO INTERNO (Reemplazo de lucide-react para un solo archivo HTML) ---
+        const createIcon = (paths) => ({ className, fill="none", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{__html: paths}} {...props} />
+        );
+
+        const MapPin = createIcon('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>');
+        const Clock = createIcon('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>');
+        const ExternalLink = createIcon('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>');
+        const Navigation = createIcon('<polygon points="3 11 22 2 13 21 11 13 3 11"/>');
+        const CheckCircle = createIcon('<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>');
+        const Music = createIcon('<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>');
+        const Utensils = createIcon('<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>');
+        const Heart = createIcon('<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>');
+        const Shirt = createIcon('<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>');
+        const Info = createIcon('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>');
+        const ChevronDown = createIcon('<polyline points="6 9 12 15 18 9"/>');
+        const Send = createIcon('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>');
+        const Gift = createIcon('<polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>');
+        const Users = createIcon('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>');
+        const AlertCircle = createIcon('<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>');
+        const Sun = createIcon('<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>');
+        const Sparkles = createIcon('<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M19 17v4"/><path d="M17 19h4"/>');
+        const Leaf = createIcon('<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>');
+        const Pause = createIcon('<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>');
+
+        // --- ELEMENTOS DE VIDA: Acuarelas, Line Art y Fondos Atmosféricos ---
+
+        const WatercolorWash = ({ color, style }) => (
+          <div 
+            className={`absolute rounded-full mix-blend-multiply filter blur-[80px] opacity-40 pointer-events-none z-0 ${color}`}
+            style={style}
+          ></div>
+        );
+
+        const BotanicalLineArt = ({ style, rotation = 0 }) => (
+          <div className="absolute pointer-events-none z-0 opacity-20" style={{...style, transform: `rotate(${rotation}deg)`}}>
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+              <path d="M 100 200 C 100 100 150 50 180 20" stroke="#5C768D" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+              <path d="M 120 150 C 150 140 160 110 180 100 C 160 120 130 130 120 150 Z" fill="#5C768D"/>
+              <path d="M 135 110 C 160 90 170 60 185 50 C 160 70 140 90 135 110 Z" fill="#5C768D"/>
+              <path d="M 150 70 C 170 50 180 20 190 10 C 170 30 150 50 150 70 Z" fill="#5C768D"/>
+              <path d="M 100 160 C 70 140 50 110 30 100 C 60 110 80 130 100 160 Z" fill="#5C768D"/>
+              <path d="M 110 120 C 80 100 60 70 40 60 C 70 70 90 100 110 120 Z" fill="#5C768D"/>
+              <path d="M 120 80 C 90 60 70 30 50 20 C 80 30 100 60 120 80 Z" fill="#5C768D"/>
+            </svg>
+          </div>
+        );
+
+        const GoldFlourish = ({ style }) => (
+          <div className="absolute pointer-events-none z-0 opacity-40" style={style}>
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+              <path d="M 10 90 C 30 90 40 50 90 10" stroke="#D4AF37" strokeWidth="0.5" fill="none"/>
+              <circle cx="90" cy="10" r="2" fill="#D4AF37"/>
+              <circle cx="70" cy="30" r="1.5" fill="#D4AF37"/>
+              <circle cx="50" cy="60" r="1" fill="#D4AF37"/>
+              <circle cx="30" cy="75" r="2" fill="#D4AF37"/>
+            </svg>
+          </div>
+        );
+
+        const GoldenDust = () => (
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            {[...Array(25)].map((_, i) => (
+              <div 
+                key={i} 
+                className="absolute rounded-full bg-[#EAD3C6] animate-float"
+                style={{
+                  width: Math.random() * 4 + 2 + 'px',
+                  height: Math.random() * 4 + 2 + 'px',
+                  left: Math.random() * 100 + '%',
+                  top: Math.random() * 100 + '%',
+                  animationDuration: Math.random() * 15 + 10 + 's',
+                  animationDelay: Math.random() * 5 + 's',
+                  opacity: Math.random() * 0.6 + 0.2
+                }}
+              ></div>
+            ))}
+          </div>
+        );
+
+        const AtmosphericLandscape = ({ src, opacity = "opacity-[0.12]", blend = "mix-blend-luminosity", bgColor = "from-[#FDF7F2] to-[#FDF7F2]" }) => (
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <img 
+              src={src} 
+              alt="Fondo de paisaje cálido" 
+              className={`w-full h-full object-cover filter blur-[3px] sepia-[40%] contrast-[110%] ${opacity} ${blend}`} 
+            />
+            <div className={`absolute inset-0 bg-gradient-to-b ${bgColor} opacity-80`}></div>
+          </div>
+        );
+
+        const App = () => {
+          const [scrolled, setScrolled] = useState(false);
+          const [submitted, setSubmitted] = useState(false);
+          const [loading, setLoading] = useState(false);
+          const [isPlaying, setIsPlaying] = useState(false);
+          const audioRef = useRef(null);
+          const [formData, setFormData] = useState({ nombre: '', asistencia: 'si', acompanante: 'no', alergias: '' });
+
+          const GOOGLE_FORM_URL = "https://docs.google.com/forms/u/0/d/e/TU_ID_DE_FORMULARIO/formResponse";
+          const ENTRY_IDS = { nombre: "entry.1", asistencia: "entry.2", acompanante: "entry.3", alergias: "entry.4" };
+
+          useEffect(() => {
+            const handleScroll = () => setScrolled(window.scrollY > 50);
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          useEffect(() => {
+            if (audioRef.current) {
+              if (isPlaying) {
+                audioRef.current.play().catch(e => console.log("Reproducción bloqueada por el navegador"));
+              } else {
+                audioRef.current.pause();
+              }
+            }
+          }, [isPlaying]);
+
+          const handleInputChange = (e) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({ ...prev, [name]: value }));
+          };
+
+          const handleSubmit = async (e) => {
+            e.preventDefault();
+            setLoading(true);
+            const googleFormData = new FormData();
+            googleFormData.append(ENTRY_IDS.nombre, formData.nombre);
+            googleFormData.append(ENTRY_IDS.asistencia, formData.asistencia);
+            googleFormData.append(ENTRY_IDS.acompanante, formData.acompanante);
+            googleFormData.append(ENTRY_IDS.alergias, formData.alergias);
+            try {
+              await fetch(GOOGLE_FORM_URL, { method: 'POST', mode: 'no-cors', body: googleFormData });
+              setSubmitted(true);
+            } catch (error) { console.error(error); } finally { setLoading(false); }
+          };
+
+          const openGmaps = () => { window.open('https://www.google.com/maps/search/?api=1&query=Hacienda+Retiro+Real+Villa+de+Leyva', '_blank'); };
+          const openWaze = () => { window.open('https://waze.com/ul?q=Hacienda%20Retiro%20Real%20Villa%20de%20Leyva&navigate=yes', '_blank'); };
+
+          const itinerary = [
+            { time: "02:00 PM", title: "Ceremonia Religiosa", desc: "El momento más trascendental del día, donde consagraremos nuestro amor y recibiremos la bendición de Dios.", phrase: "«Y sobre todas estas cosas vestíos de amor, que es el vínculo perfecto.»", icon: <Heart className="w-5 h-5" /> },
+            { time: "04:00 PM", title: "Almuerzo de Celebración", desc: "Un 'late lunch' diseñado para deleitarnos, compartir el pan y saborear el momento en compañía.", phrase: "Donde el buen comer y el amor se sientan a la mesa.", icon: <Utensils className="w-5 h-5" /> },
+            { time: "06:00 PM", title: "Sunset Cóctel", desc: "Brindis y conversación mientras el sol se oculta tras la cordillera.", phrase: "Donde el sol se despide, la magia despierta.", icon: <Sun className="w-5 h-5" /> },
+            { time: "07:30 PM", title: "Celebración", desc: "Baile y alegría bajo el cielo estrellado.", phrase: "Porque la vida es hoy y el mañana es nuestro.", icon: <Music className="w-5 h-5" /> }
+          ];
+
+          return (
+            <div className="min-h-screen bg-white text-[#2C3E50] font-serif selection:bg-[#5C768D] selection:text-white overflow-x-hidden relative">
+              
+              <div className="fixed inset-0 opacity-[0.03] pointer-events-none z-0 mix-blend-multiply" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}></div>
+
+              <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-6'}`}>
+                <div className="container mx-auto px-6 flex justify-between items-center">
+                  <div className="flex items-center space-x-4 group cursor-pointer">
+                    <div className={`flex flex-col items-center leading-none transition-colors duration-500 ${scrolled ? 'text-[#5C768D]' : 'text-[#FDF7F2]'}`}>
+                      <span className="text-2xl font-light">L</span>
+                      <div className={`h-[1px] w-6 my-0.5 transition-colors duration-500 ${scrolled ? 'bg-[#5C768D]/30' : 'bg-[#FDF7F2]/40'}`}></div>
+                      <span className="text-2xl font-light">G</span>
+                    </div>
+                    <div className={`flex flex-col border-l pl-4 transition-colors duration-500 ${scrolled ? 'border-[#EAD3C6]' : 'border-[#FDF7F2]/30'}`}>
+                      <span className={`text-[10px] uppercase tracking-[0.4em] font-sans font-extrabold transition-colors duration-500 ${scrolled ? 'text-[#5C768D]' : 'text-white'}`}>Laura & Gabriel</span>
+                      <span className={`text-[8px] uppercase tracking-[0.2em] font-sans mt-0.5 font-bold transition-colors duration-500 ${scrolled ? 'text-[#7F8C8D]' : 'text-white/70'}`}>08 . 08 . 2026</span>
+                    </div>
+                  </div>
+                  <div className={`hidden md:flex space-x-10 text-[10px] uppercase tracking-[0.3em] font-sans font-bold transition-colors duration-500 ${scrolled ? 'text-[#7F8C8D]' : 'text-white/80'}`}>
+                    <a href="#inicio" className={`transition-colors ${scrolled ? 'hover:text-[#5C768D]' : 'hover:text-white'}`}>Inicio</a>
+                    <a href="#itinerario" className={`transition-colors ${scrolled ? 'hover:text-[#5C768D]' : 'hover:text-white'}`}>Itinerario</a>
+                    <a href="#vestimenta" className={`transition-colors ${scrolled ? 'hover:text-[#5C768D]' : 'hover:text-white'}`}>Detalles</a>
+                    <a href="#rsvp" className={`transition-colors ${scrolled ? 'hover:text-[#5C768D]' : 'hover:text-white'}`}>Confirmar</a>
+                  </div>
+                  <a href="#rsvp" className={`px-8 py-2.5 rounded-full text-[10px] font-sans uppercase tracking-widest shadow-lg hover:scale-105 transition-all duration-500 ${scrolled ? 'bg-[#5C768D] text-white shadow-blue-900/10' : 'bg-white/10 backdrop-blur-md border border-white/40 text-white hover:bg-white hover:text-[#2C3E50]'}`}>
+                    RSVP
+                  </a>
+                </div>
+              </nav>
+
+              <header id="inicio" className="relative h-screen flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-0 bg-black/20 z-10"></div>
+                  <div className="w-full h-full bg-cover bg-center scale-110" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=2070")', filter: 'contrast(95%) brightness(1.05) grayscale(15%) sepia(10%)' }}></div>
+                </div>
+                <div className="relative z-20 text-center text-white px-4">
+                  <p className="uppercase tracking-[0.6em] text-[10px] mb-8 animate-fade-in font-sans font-bold opacity-90 text-[#FDF7F2]">Nos Casamos</p>
+                  <h1 className="text-7xl md:text-9xl mb-10 font-light italic leading-tight animate-fade-in-up drop-shadow-md">Laura <span className="text-4xl md:text-6xl not-italic font-serif opacity-70 px-2">&</span> Gabriel</h1>
+                  <div className="w-24 h-[1px] bg-white/40 mx-auto mb-10"></div>
+                  <p className="text-xl md:text-2xl font-light tracking-[0.4em] mb-14 animate-fade-in font-sans uppercase text-[#FDF7F2]">08 . 08 . 2026 — VILLA DE LEYVA</p>
+                  <a href="#itinerario" className="inline-block border border-white/60 px-14 py-5 backdrop-blur-sm transition-all text-[11px] uppercase tracking-[0.3em] font-sans hover:bg-white/10">Explorar Itinerario</a>
+                </div>
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-white/60"><ChevronDown className="w-6 h-6" /></div>
+              </header>
+
+              <section id="prologo" className="relative py-32 px-6 w-full text-center overflow-hidden bg-[#FCEFEF]">
+                <AtmosphericLandscape src="https://images.unsplash.com/photo-1495344517868-8ebaf0a2044e?auto=format&fit=crop&q=80&w=2000" opacity="opacity-[0.25]" bgColor="from-[#FCEFEF] to-[#FCEFEF]" />
+                <GoldenDust />
+                
+                <div className="relative z-10 max-w-4xl mx-auto animate-fade-in-up bg-white/50 backdrop-blur-sm p-10 md:p-16 rounded-[3rem] border border-white/50 shadow-sm">
+                  <Heart className="w-12 h-12 text-red-600 mx-auto mb-10 drop-shadow-md" fill="currentColor" />
+                  <p className="text-2xl md:text-4xl font-light italic text-[#2C3E50] leading-relaxed mb-8">
+                    "Hay momentos en la vida que solo cobran su verdadero sentido cuando se comparten con las personas correctas."
+                  </p>
+                  <div className="w-16 h-[1px] bg-[#5C768D]/30 mx-auto mb-8"></div>
+                  <p className="text-[#7F8C8D] font-sans text-base leading-relaxed max-w-2xl mx-auto mb-12">
+                    Ustedes son nuestra historia, nuestro refugio y nuestra mayor alegría. Nos llena de inmensa gratitud invitarlos a ser testigos del inicio de este nuevo capítulo. Queremos que esta celebración sea un abrazo extendido para todos los que amamos.
+                  </p>
+                  <div className="flex justify-end pr-10">
+                    <span className="text-3xl font-light italic text-[#5C768D] opacity-80">Laura & Gabriel</span>
+                  </div>
+                </div>
+              </section>
+
+              <section id="logistica" className="relative py-32 px-6 w-full overflow-hidden bg-[#F0F5F9]">
+                <AtmosphericLandscape src="https://images.unsplash.com/photo-1542224566-6e85f2e6772f?auto=format&fit=crop&q=80&w=2000" opacity="opacity-[0.15]" bgColor="from-[#F0F5F9] to-[#F0F5F9]" />
+                <BotanicalLineArt style={{ top: '0%', left: '-5%', width: '300px', height: '300px' }} rotation={45} />
+
+                <div className="relative z-10 max-w-6xl mx-auto">
+                  <div className="text-center mb-20 mt-10">
+                    <span className="text-[#5C768D] font-sans text-[11px] uppercase tracking-[0.4em] font-bold">Logística</span>
+                    <h2 className="text-4xl md:text-6xl mt-4 font-light italic text-[#2C3E50]">Cómo Llegar</h2>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-10">
+                    <div className="bg-white/80 backdrop-blur-md p-12 rounded-[3rem] shadow-sm border border-white/60">
+                      <MapPin className="text-[#5C768D] w-8 h-8 mb-8" />
+                      <h3 className="text-3xl mb-4 font-light text-[#2C3E50]">Hacienda Retiro Real</h3>
+                      <p className="text-[#7F8C8D] font-sans text-base mb-12">Km 2 vía Arcabuco. Villa de Leyva, Boyacá.</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button onClick={openGmaps} className="flex items-center justify-center space-x-3 border border-white/60 py-4 rounded-2xl text-[10px] uppercase tracking-widest font-sans hover:bg-white hover:border-[#5C768D] transition-all">
+                          <Navigation className="w-4 h-4 text-[#5C768D]" /><span>Google Maps</span>
+                        </button>
+                        <button onClick={openWaze} className="flex items-center justify-center space-x-3 border border-white/60 py-4 rounded-2xl text-[10px] uppercase tracking-widest font-sans hover:bg-white hover:border-[#5C768D] transition-all">
+                          <ExternalLink className="w-4 h-4 text-[#5C768D]" /><span>Waze</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="bg-[#5C768D] p-12 rounded-[3rem] text-white shadow-xl shadow-blue-900/10 relative overflow-hidden">
+                      <div className="absolute -top-24 -right-24 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl"></div>
+                      <Clock className="text-[#F0F5F9] w-8 h-8 mb-8 relative z-10" />
+                      <h3 className="text-3xl mb-4 font-light relative z-10">Sábado, 08 de Agosto</h3>
+                      <p className="text-white/80 font-sans text-base mb-12 relative z-10">Ceremonia ritual: 02:00 PM.<br />Agradecemos su puntualidad.</p>
+                      <button className="w-full bg-white text-[#5C768D] py-5 rounded-2xl text-[11px] font-sans font-bold uppercase tracking-widest hover:bg-[#F0F5F9] transition-colors relative z-10">Agendar Calendario</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="itinerario" className="relative py-32 bg-[#FFFDF2] overflow-hidden">
+                <AtmosphericLandscape src="https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd?auto=format&fit=crop&q=80&w=2000" opacity="opacity-[0.10]" bgColor="from-[#FFFDF2] to-[#FFFDF2]" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF2] to-transparent h-48 z-0 pointer-events-none"></div>
+                
+                <GoldenDust /> 
+                <WatercolorWash color="bg-orange-100" style={{ top: '2%', right: '15%', width: '300px', height: '300px' }} />
+                <BotanicalLineArt style={{ top: '2%', left: '5%', width: '200px', height: '200px' }} rotation={-15} />
+                
+                <div className="relative z-10 max-w-4xl mx-auto px-6 text-center mb-20">
+                  <span className="text-[#5C768D] font-sans text-[11px] uppercase tracking-[0.4em] font-bold">Cronograma</span>
+                  <h2 className="text-4xl md:text-5xl mt-4 font-light italic text-[#2C3E50]">El Viaje del Día</h2>
+                </div>
+                <div className="relative z-10 max-w-4xl mx-auto px-6">
+                  <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] bg-[#5C768D]/30 -translate-x-1/2"></div>
+                  <div className="space-y-24">
+                    {itinerary.map((item, index) => (
+                      <div key={index} className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                        <div className="absolute left-4 md:left-1/2 w-12 h-12 bg-[#FFFDF2] border-2 border-[#5C768D] rounded-full -translate-x-1/2 z-10 flex items-center justify-center text-[#5C768D] shadow-md">{item.icon}</div>
+                        <div className="ml-16 md:ml-0 md:w-1/2 md:px-16">
+                          <div className="p-10 rounded-[2.5rem] bg-white/80 backdrop-blur-sm border border-white/60 shadow-sm hover:shadow-lg transition-all duration-300">
+                            <span className="text-[#5C768D] font-sans text-[10px] font-bold tracking-widest">{item.time}</span>
+                            <h4 className="text-2xl mt-4 mb-2 font-light text-[#2C3E50]">{item.title}</h4>
+                            <p className="text-[#7F8C8D] font-sans text-sm mb-4">{item.desc}</p>
+                            <div className="pt-4 border-t border-gray-50 italic text-[#5C768D] text-xs opacity-80 tracking-tighter">"{item.phrase}"</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              <section id="vestimenta" className="relative py-32 px-6 w-full bg-[#FCEFEF]">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#FCEFEF] to-transparent h-32 z-0 pointer-events-none top-0"></div>
+                <BotanicalLineArt style={{ top: '5%', left: '40%', width: '250px', height: '250px' }} rotation={90} />
+
+                <div className="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+                  <div className="relative group">
+                    <div className="absolute -inset-6 bg-white/50 rounded-[4rem] -rotate-3 transition-transform group-hover:rotate-0"></div>
+                    <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=2069" alt="Estética" className="relative rounded-[3.5rem] shadow-2xl grayscale-[15%] contrast-[95%]" />
+                  </div>
+                  <div className="space-y-12">
+                    <div>
+                      <span className="text-[#5C768D] font-sans text-[11px] uppercase tracking-[0.4em] font-bold">Etiqueta</span>
+                      <h2 className="text-4xl md:text-5xl mt-6 mb-8 font-light italic text-[#2C3E50]">Business Casual</h2>
+                      <div className="space-y-10">
+                        <div className="flex gap-8"><Shirt className="text-[#5C768D] w-7 h-7 shrink-0" /><p className="text-base text-[#7F8C8D]"><strong className="text-[#2C3E50]">Hombres:</strong> Pantalón de tela/dril, camisa y blazer (sin corbata).<br /><br /><strong className="text-[#2C3E50]">Mujeres:</strong> Vestidos fluidos o faldas elegantes.</p></div>
+                        <div className="flex gap-8"><Info className="text-[#5C768D] w-7 h-7 shrink-0" /><p className="text-base text-[#7F8C8D]">Estaremos en la naturaleza: usar calzado cómodo para el césped y traer abrigo para la noche.</p></div>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-[#5C768D]/20">
+                       <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-[#5C768D] mb-6 font-bold">Gama Acuarela Viva</p>
+                       <div className="flex gap-5">
+                         {['#FFFDF2', '#FCEFEF', '#F0F5F9', '#5C768D', '#2C3E50'].map(c => <div key={c} style={{backgroundColor: c}} className="w-10 h-10 rounded-full border-4 border-white shadow-md transform hover:scale-110 transition-all"></div>)}
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="relative py-32 px-6 text-center w-full bg-[#F0F5F9]">
+                <WatercolorWash color="bg-rose-200" style={{ top: '-20%', right: '20%', width: '600px', height: '600px' }} />
+                <GoldFlourish style={{ bottom: '5%', left: '10%', width: '180px', height: '180px' }} />
+
+                <div className="relative z-10 max-w-4xl mx-auto">
+                  <Gift className="text-[#5C768D] w-12 h-12 mx-auto mb-8 opacity-80" />
+                  <h2 className="text-4xl font-light italic mb-10 text-[#2C3E50]">Un detalle con amor</h2>
+                  <div className="bg-white/70 backdrop-blur-sm p-8 md:p-16 rounded-[4rem] border border-white/60 group shadow-sm">
+                    <p className="text-[#7F8C8D] font-sans text-lg mb-12 max-w-xl mx-auto italic">
+                      Nuestra alegría es su compañía. Si desean hacernos un presente, contaremos con <span className="text-[#2C3E50] font-bold uppercase text-sm tracking-widest">Lluvia de sobres</span>.
+                    </p>
+                    
+                    <div className="relative h-[450px] rounded-[2.5rem] overflow-hidden shadow-2xl">
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                       <img 
+                         src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=1000" 
+                         alt="Pareja caminando al atardecer" 
+                         className="w-full h-full object-cover transform transition-transform duration-[4000ms] group-hover:scale-110" 
+                       />
+                       <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-12">
+                          <p className="text-white text-2xl md:text-3xl font-light italic text-center leading-relaxed mb-6">
+                            "Su compañía será parte del inicio de nuestro hogar y nuestros sueños compartidos."
+                          </p>
+                          <Sparkles className="text-[#EAB308] w-6 h-6 opacity-80" />
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="rsvp" className="relative py-32 px-6 w-full bg-[#FFFDF2]">
+                <AtmosphericLandscape src="https://images.unsplash.com/photo-1494548162494-384bba4ab999?auto=format&fit=crop&q=80&w=2000" opacity="opacity-[0.18]" blend="mix-blend-multiply" bgColor="from-[#FFFDF2] to-[#FFFDF2]" />
+                <BotanicalLineArt style={{ bottom: '0%', right: '-5%', width: '350px', height: '350px' }} rotation={-90} />
+
+                <div className="relative z-10 max-w-4xl mx-auto">
+                  <div className="text-center mb-20">
+                    <span className="text-[#5C768D] font-sans text-[11px] uppercase tracking-[0.4em] font-bold">Confirmación</span>
+                    <h2 className="text-4xl md:text-6xl mt-4 font-light italic text-[#2C3E50]">¿Nos acompañan?</h2>
+                    <p className="text-[#7F8C8D] mt-6 italic">Por favor, confirmen antes del 15 de Julio.</p>
+                  </div>
+
+                  {submitted ? (
+                    <div className="bg-white/80 p-16 rounded-[3rem] text-center border border-[#5C768D]/20 animate-fade-in shadow-inner backdrop-blur-sm">
+                      <CheckCircle className="text-[#5C768D] w-16 h-16 mx-auto mb-8" />
+                      <h3 className="text-3xl mb-4 font-light italic font-serif text-[#2C3E50]">¡Gracias, {formData.nombre}!</h3>
+                      <p className="text-[#7F8C8D] font-sans max-w-sm mx-auto">Tu mensaje ha sido recibido con cariño. Nos vemos muy pronto en Villa de Leyva.</p>
+                      <button onClick={() => setSubmitted(false)} className="mt-12 text-[11px] uppercase tracking-widest font-sans font-bold text-[#5C768D] hover:underline">Enviar otra respuesta</button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-md p-12 md:p-16 rounded-[3.5rem] border border-white/60 shadow-sm space-y-10">
+                      <div className="grid md:grid-cols-2 gap-10">
+                        <div className="space-y-4 text-left">
+                          <label className="text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#5C768D]">Nombre Completo</label>
+                          <input required type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} placeholder="Tu nombre" className="w-full bg-white/90 border border-transparent focus:border-[#5C768D] rounded-2xl px-6 py-5 outline-none font-sans text-[#2C3E50] transition-colors" />
+                        </div>
+                        <div className="space-y-4 text-left">
+                          <label className="text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#5C768D]">¿Asistirás?</label>
+                          <select name="asistencia" value={formData.asistencia} onChange={handleInputChange} className="w-full bg-white/90 border border-transparent focus:border-[#5C768D] rounded-2xl px-6 py-5 outline-none font-sans text-[#2C3E50] cursor-pointer transition-colors">
+                            <option value="si">Confirmar Asistencia</option>
+                            <option value="no">Lamentablemente no podré</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {formData.asistencia === 'si' && (
+                        <div className="space-y-4 animate-fade-in text-left">
+                          <label className="text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#5C768D] flex items-center gap-2"><Users className="w-4 h-4" /> ¿Vienes con acompañante?</label>
+                          <div className="flex gap-4">
+                            <button type="button" onClick={() => setFormData({...formData, acompanante: 'si'})} className={`flex-1 py-4 rounded-2xl font-sans text-xs uppercase tracking-widest transition-all ${formData.acompanante === 'si' ? 'bg-[#5C768D] text-white shadow-md' : 'bg-white/90 text-[#7F8C8D]'}`}>Sí</button>
+                            <button type="button" onClick={() => setFormData({...formData, acompanante: 'no'})} className={`flex-1 py-4 rounded-2xl font-sans text-xs uppercase tracking-widest transition-all ${formData.acompanante === 'no' ? 'bg-[#5C768D] text-white shadow-md' : 'bg-white/90 text-[#7F8C8D]'}`}>No</button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-4 text-left">
+                        <label className="text-[11px] uppercase tracking-[0.2em] font-sans font-bold text-[#5C768D] flex items-center gap-2"><AlertCircle className="w-4 h-4" /> Notas o Alergias</label>
+                        <textarea name="alergias" value={formData.alergias} onChange={handleInputChange} rows="3" placeholder="Mensaje para los novios..." className="w-full bg-white/90 border border-transparent focus:border-[#5C768D] rounded-3xl px-6 py-5 outline-none font-sans resize-none text-[#2C3E50] transition-colors"></textarea>
+                      </div>
+
+                      <button type="submit" disabled={loading} className="w-full bg-[#5C768D] text-white py-6 rounded-2xl text-xs uppercase tracking-[0.4em] font-sans font-bold hover:bg-[#4A6074] transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-50 shadow-xl shadow-blue-900/5">
+                        <Send className="w-4 h-4" />
+                        <span>{loading ? 'ENVIANDO...' : 'ENVIAR RESPUESTA'}</span>
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </section>
+
+              <footer className="relative py-32 bg-white text-center border-t border-[#EAD3C6] overflow-hidden">
+                <BotanicalLineArt style={{ bottom: '-10%', left: '40%', width: '200px', height: '200px' }} rotation={15} />
+                <GoldenDust />
+                <div className="relative z-10">
+                  <h2 className="text-4xl font-light italic text-[#5C768D] mb-10 tracking-widest">Laura & Gabriel</h2>
+                  <div className="w-16 h-[1px] bg-[#5C768D]/30 mx-auto mb-12"></div>
+                  <p className="text-[11px] uppercase tracking-[0.5em] text-[#7F8C8D] mb-12 font-bold font-sans">VILLA DE LEYVA — 08.08.2026</p>
+                  <Heart className="w-5 h-5 text-[#5C768D] mx-auto opacity-40" />
+                </div>
+              </footer>
+
+              <div className="fixed bottom-6 right-6 z-50 animate-fade-in-up">
+                <audio ref={audioRef} loop src="https://cdn.pixabay.com/audio/2022/11/22/audio_d3e18a9dbd.mp3" />
+                <button 
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="bg-white/90 backdrop-blur-md border border-[#F0F5F9] p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 hover:bg-[#FFFDF2] transition-all group"
+                  title={isPlaying ? "Pausar música" : "Escuchar nuestra canción"}
+                >
+                  {isPlaying ? (
+                    <Pause className="w-6 h-6 text-[#5C768D] animate-pulse" />
+                  ) : (
+                    <div className="relative">
+                      <Music className="w-6 h-6 text-[#5C768D] group-hover:animate-bounce" />
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5C768D] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#5C768D]"></span>
+                      </span>
+                    </div>
+                  )}
+                </button>
+              </div>
+
+            </div>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
